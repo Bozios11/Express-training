@@ -43,4 +43,25 @@ app.post('/api/users',(request,response) =>{
    const newUser =  {id: mockusers[mockusers.length -1].id + 1,...body};
    mockusers.push(newUser);
     return response.status(201).send(newUser);
+}); 
+
+//PUT
+
+app.put("/api/users/:id",(request,response) =>{
+    const 
+    {     body, 
+          params: {id},
+    } = request;
+
+    const parseId = parseInt(id);
+
+    if( isNaN(parseId)) return response.sendStatus(400);
+
+    const findUserIndex = mockusers.findIndex((user) => user.id === parseId);
+
+    if(findUserIndex === -1) return response.sendStatus(404);
+
+    mockusers[findUserIndex] = {id: parseId, ...body};
+
+    return response.sendStatus(200);
 });
