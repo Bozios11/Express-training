@@ -1,4 +1,5 @@
 import express from 'express';
+import {query,validationResult,body,matchedData} from "express-validator";
 
 const app = express();
 app.use(express.json());  // Fix to correctly parse incoming JSON bodies
@@ -50,7 +51,10 @@ app.get("/", loggingMiddleware, (request, response) => {
     response.status(200).send({ msg: "Hello" });
 });
 
-app.get("/api/users", (request, response) => {
+//validation
+app.get("/api/users", query('filter').isString().notEmpty().isLength({min:3,max:10}), (request, response) => {
+    const result = validationResult(request);
+    console.log(result);
     const { query: { filter, value } } = request;
     if (filter && value) {
         return response.send(mockusers.filter((user) => user[filter]?.includes(value)));
@@ -58,11 +62,19 @@ app.get("/api/users", (request, response) => {
     return response.send(mockusers);
 });
 
-// POST route to create a new user
-app.post('/api/users', (request, response) => {
-    console.log(request.body);
-    const { body } = request;
-    const newUser = { id: mockusers[mockusers.length - 1].id + 1, ...body };
+// POST route to create a new user || validation 
+app.post('/api/users',
+    body('username').notEmpty().withMessage("not empty").isLength({min: 5, max: 32}).withMessage("username must be between 5 and 32 characters").isString().withMessage("Must be string"), 
+    body('displayName').notEmpty(),
+    (request, response) => {
+    const result =validationResult(request);
+    if(!result.isEmpty()){
+        return response.status(400).send({errors: result.array()});
+    }
+
+    const data = matchedData(request);
+    console.log(data)
+    const newUser = { id: mockusers[mockusers.length - 1].id + 1, ...data };
     mockusers.push(newUser);
     return response.status(201).send(newUser);
 });
