@@ -84,4 +84,26 @@ app.patch("/api/users/:id",(request,response) =>{
 
     mockusers[findUserIndex] = { ...mockusers[findUserIndex], ...body};
     
+    return response.sendStatus(200);
+});
+
+//Delete
+
+app.delete("/api/users/:id", (request, response) => {
+    const 
+    { 
+          params: {id},
+    } = request;
+
+    const parsedId = parseInt(id);
+
+    if(isNaN(parsedId)) return response.sendStatus(400);
+
+    const findUserIndex = mockusers.findIndex((user) => user.id === parsedId);
+
+    if(findUserIndex === -1) return response.sendStatus(404);
+
+    mockusers.splice(findUserIndex,1);
+
+    return response.sendStatus(200);
 });
