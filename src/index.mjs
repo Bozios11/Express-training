@@ -65,3 +65,23 @@ app.put("/api/users/:id",(request,response) =>{
 
     return response.sendStatus(200);
 });
+
+//Patch
+
+app.patch("/api/users/:id",(request,response) =>{
+    const 
+    {     body, 
+          params: {id},
+    } = request;
+
+    const parseId = parseInt(id);
+
+    if( isNaN(parseId)) return response.sendStatus(400);
+
+    const findUserIndex = mockusers.findIndex((user) => user.id === parseId);
+
+    if(findUserIndex === -1) return response.sendStatus(404);
+
+    mockusers[findUserIndex] = { ...mockusers[findUserIndex], ...body};
+    
+});
