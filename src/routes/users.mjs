@@ -7,8 +7,11 @@ const userRouter = Router();
 
 //routers and validation
 userRouter.get("/api/users", query('filter').isString().notEmpty().isLength({min:3,max:10}), (request, response) => {
+    console.log(request.headers.cookie);
+    console.log(request.cookies);
+    if(request.cookies.hello && request.cookies.hello === "helloworld") console.log("spoko");
+    else console.log("zua aura :/");
     const result = validationResult(request);
-    console.log(result);
     const { query: { filter, value } } = request;
     if (filter && value) {
         return response.send(mockusers.filter((user) => user[filter]?.includes(value)));
