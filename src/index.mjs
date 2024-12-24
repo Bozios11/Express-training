@@ -77,6 +77,13 @@ app.post('/api/cart', (request,response) => {
 
 //passport
 app.post('/api/prob', passport.authenticate('local'), (request, response) => {
-    
+    response.sendStatus(200);
+});
+
+app.get('/api/prob/status', (request,response) => {
+    console.log(`inside auth/prob endpoint`)
+    console.log(request.user);
+    if(request.user) return response.send(request.user);
+    return response.sendStatus(401);
 });
 
